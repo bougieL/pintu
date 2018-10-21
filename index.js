@@ -4,14 +4,14 @@ const gv = {
 }
 
 // 格子纵横数量
-const gridConfig = {
-  wn: 6,
-  hn: 6,
+const gc = {
+  wn: 3,
+  hn: 3,
   pn: 1,
-  nn() {
+  nn () {
     return this.wn * this.hn
   },
-  img() {
+  img () {
     return `./img/pintu${this.pn}.jpg`
   }
 }
@@ -26,13 +26,13 @@ mounted()
 
 const destroy = function () {
   $('.wrap').html('')
-  gridConfig.wn++
-  gridConfig.hn++
-  gridConfig.pn++
+  gc.wn++
+  gc.hn++
+  gc.pn++
   mounted()
 }
 
-function gridStyle(n, wn, hn) {
+function gridStyle (n, wn, hn) {
   let gm = parseFloat($('.main').css('padding')) / 2
   let ww = parseFloat($('.wrap').css('width'))
   let wh = parseFloat($('.wrap').css('height'))
@@ -45,44 +45,38 @@ function gridStyle(n, wn, hn) {
     height: gh + 'px',
     left: gl + 'px',
     top: gt + 'px',
-    background: `url(${gridConfig.img()})`,
+    background: `url(${gc.img()})`,
     backgroundSize: `${gw * wn}px ${gh * hn}px`
   }
   return { style, n, pos: `-${gw * (n % wn)}px -${gh * Math.floor(n / wn)}px` }
 }
 
-function initGrids() {
+function initGrids () {
   gv.grids = []
   gv.styles = []
-  for (let i = 0; i < gridConfig.nn(); i++) {
-    let { style, n, pos } = gridStyle(i, gridConfig.wn, gridConfig.hn)
+  for (let i = 0; i < gc.nn(); i++) {
+    let { style, n, pos } = gridStyle(i, gc.wn, gc.hn)
     let el = document.createElement('div')
-    $(el).addClass('grid')
-    // $(el).html(i)
-    $(el).data('n', i)
-    $(el).data('pos', pos)
+    $(el).addClass('grid').data('n', n).data('pos', pos).appendTo('.wrap')
     gv.grids.push(el)
-    $('.wrap').append(el)
     gv.styles.push({ style, n })
   }
 }
 
-function initGridsStyles() {
+function initGridsStyles () {
   gv.grids.map((el, i) => {
     let { n, style } = gv.styles[i]
-    $(el).data('n', n)
-    $(el).css(style)
-    $(el).css({ backgroundPosition: $(el).data('pos') })
+    $(el).data('n', n).css(style).css({ backgroundPosition: $(el).data('pos') })
   })
 }
 
-function shuffleGrids() {
+function shuffleGrids () {
   gv.styles = gv.styles.sort(() => Math.random() > 0.5 ? 1 : -1)
   initGridsStyles()
   if (success()) shuffleGrids()
 }
 
-function success() {
+function success () {
   let flag = true
   $('.grid').each((i, el) => {
     if ($(el).data('n') !== i) {
@@ -92,7 +86,7 @@ function success() {
   return flag
 }
 
-function gridClick() {
+function gridClick () {
   let a1 = null
   let a2 = null
   $('.grid').click(function () {
@@ -105,12 +99,8 @@ function gridClick() {
       let n2 = $a2.data('n')
       let s1 = $a1.attr('style')
       let s2 = $a2.attr('style')
-      $a1.data('n', n2)
-      $a2.data('n', n1)
-      $a1.attr('style', s2)
-      $a2.attr('style', s1)
-      $a1.css({ backgroundPosition: $a1.data('pos') })
-      $a2.css({ backgroundPosition: $a2.data('pos') })
+      $a1.data('n', n2).attr('style', s2).css({ backgroundPosition: $a1.data('pos') })
+      $a2.data('n', n1).attr('style', s1).css({ backgroundPosition: $a2.data('pos') })
       setTimeout(() => {
         $a1.removeClass('grid-active')
         $a2.removeClass('grid-active')
@@ -120,7 +110,7 @@ function gridClick() {
           alert('success')
           destroy()
         }
-      }, 300)
+      }, 200)
     }
   })
 }

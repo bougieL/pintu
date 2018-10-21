@@ -32,7 +32,8 @@ div {
   color: #fff;
   position: absolute;
   background: #ff6500;
-  transition: .3s ease; }
+  transition: .2s ease; }
   .grid-active {
     z-index: 1;
+    opacity: .6;
     background: #993d00; }
